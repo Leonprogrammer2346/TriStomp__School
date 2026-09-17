@@ -483,29 +483,6 @@ class Editor : GameWindow
 
                 handle.Add(newObj);
             }
-            else if (parts[0] == "Text")
-            {
-
-                Speaker.Add(parts[1]);
-                Dialog.Add(parts[2]);
-                Event.Add(false);
-
-            }
-            else if (parts[0] == "Event")
-            {
-                Event[Event.Count - 1] = true;
-                Eventtitles.Add(parts[1]);
-            }
-            else if (parts[0] == "Trigger")
-            {
-                
-                if (triggercheck == false)
-                {
-                   
-                    break;
-                }
-
-            }
             else if (parts[0] == "MaxX")
             {
                 MaXX = float.Parse(parts[1]);
@@ -546,6 +523,7 @@ class Editor : GameWindow
 
     }
 
+/*
     public void newTrigger(string Direct, string index, int total)
     {
         
@@ -615,6 +593,7 @@ class Editor : GameWindow
         stopnow = false;
         
     }
+    */
 
     protected override void OnMouseDown(MouseButtonEventArgs e)
     {
@@ -914,29 +893,6 @@ class Editor : GameWindow
 
 
                     handle.Add(newObj);
-                }
-                else if (parts[0] == "Text")
-                {
-
-                    Speaker.Add(parts[1]);
-                    Dialog.Add(parts[2]);
-                    Event.Add(false);
-
-                }
-                else if (parts[0] == "Event")
-                {
-                    Event[Event.Count - 1] = true;
-                    Eventtitles.Add(parts[1]);
-                }
-                else if (parts[0] == "Trigger")
-                {
-
-                    if (triggercheck == false)
-                    {
-
-                        break;
-                    }
-
                 }
                 else if (parts[0] == "MaxX")
                 {
