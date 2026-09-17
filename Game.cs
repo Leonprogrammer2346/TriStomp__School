@@ -107,6 +107,8 @@ class Game : GameWindow
     public bool loadaudio = false;
     public static string LvlJB = "sigh";
     public string LvlJBS = "sigh";
+    public String SceneChar;
+    public String SceneText;
 
 
 
@@ -655,66 +657,12 @@ class Game : GameWindow
 
         textphoto.Update(dt, input);
         timer += (float)arg.Time;
-        if (textover == false && (textndex) <= AllText.Count)
+        if (textover == false)
         {
             
-            if (timer > 0.3f)
-            {
 
-                if (input.IsKeyPressed(Keys.X) && textndex > 0 && startlvl == false)
-                {
-                    Audio.PlaySound(next);
-                    timer = 0;
-
-
-                    if (textndex >= AllText.Count)
-                    {
-                        textover = true;
-                        startlvl = true;
-                        textrender = false;
-                    }
-                    else
-                    {
-                        textrender = true;
-                        UpdateText(AllText[textndex]);
-                        if (Eventt[textndex] == true)
-                        {
-
-                            currentevent = eventtitles[eventindex];
-                            eventindex += 1;
-                        }
-                        textndex += 1;
-
-                    }
-                }
-                else if (textndex == 0 && startlvl == false)
-                {
-                    timer = 0;
-
-
-                    if (textndex >= AllText.Count)
-                    {
-                        textover = true;
-                        textrender = false;
-                    }
-                    else
-                    {
-                        textrender = true;
-                        UpdateText(AllText[textndex]);
-                        if (Eventt[textndex] == true)
-                        {
-
-                            currentevent = eventtitles[eventindex];
-                            eventindex += 1;
-                        }
-                        textndex += 1;
-
-                    }
-                }
-
-
-            }
-
+            textrender = true;
+            UpdateText(AllText[textndex]);
         }
         else
         {
