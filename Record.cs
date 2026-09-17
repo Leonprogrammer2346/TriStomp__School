@@ -40,6 +40,7 @@ internal class Record : Component
     public Component ploy;
     public static List<String> spritelist = new();
     public static List<int> texturelist = new();
+    public bool firstframe = true;
 
 
     public Record(GameObject Obj)
@@ -62,22 +63,28 @@ internal class Record : Component
         if (input.IsKeyPressed(Keys.E))
         {
             recording = !recording;
-            time = 0;
-            Directory.CreateDirectory("RECORDINGS/" + obj.game.Index + "/" + obj.ObjectName);
+            
             if (recording == true)
             {
+                if (!play)
+                {
+                 time = 0;
+                }
+                
+                Directory.CreateDirectory("RECORDINGS/" + obj.game.Index + "/" + obj.ObjectName);
                 path = Path.Combine("RECORDINGS/" + obj.game.Index + "/" + obj.ObjectName, "X.txt");
                 path1 = Path.Combine("RECORDINGS/" + obj.game.Index + "/" + obj.ObjectName, "Y.txt");
                 path2 = Path.Combine("RECORDINGS/" + obj.game.Index, "Dialog.txt");
                 path3 = Path.Combine("RECORDINGS/" + obj.game.Index + "/" + obj.ObjectName, "Sprite.txt");
+            
+                ploy = obj.GetComponent<Player>();
+                File.WriteAllText(path, obj.X);
+                File.WriteAllText(path1, obj.Y);
+                File.WriteAllText(path2, "");
+                File.WriteAllText(path3, "");
+                nowVX = obj.GetComponent<Rigidbody>().XVelocity;
+                nowVY = obj.GetComponent<Rigidbody>().YVelocity;
             }
-            ploy = obj.GetComponent<Player>();
-            File.WriteAllText(path, "");
-            File.WriteAllText(path1, "");
-            File.WriteAllText(path2, "");
-            File.WriteAllText(path3, "");
-            nowVX = obj.GetComponent<Rigidbody>().XVelocity;
-            nowVY = obj.GetComponent<Rigidbody>().YVelocity;
 
         }
 
@@ -93,6 +100,7 @@ internal class Record : Component
             Yindx = 0;
             Xindx = 0;
             string[] files = Directory.GetFiles("RECORDINGS/" + obj.game.Index + "/" + obj.ObjectName, "*.txt");
+            int i = 0;
             if (files.Length > 0)
             {
                 string filename = files.FirstOrDefault(file => Path.GetFileNameWithoutExtension(file) == "X");
@@ -100,10 +108,21 @@ internal class Record : Component
             }
             foreach (string line in lines)
             {
-                string[] full = line.Split(",");
-                ximes.Add(float.Parse(full[0]));
-                Xvel.Add(float.Parse(full[1]));
+                if (i != 0)
+                {
+                    string[] full = line.Split(",");
+                    ximes.Add(float.Parse(full[0]));
+                    Xvel.Add(float.Parse(full[1]));
+                    i++
+                }
+                else
+                {
+                    obj.X = float.Parse(line);
+                    i++;
+                }
+                
             }
+            i = 0;
 
 
             if (files.Length > 0)
@@ -113,9 +132,18 @@ internal class Record : Component
             }
             foreach (string line in lines)
             {
-                string[] full = line.Split(",");
-                yimes.Add(float.Parse(full[0]));
-                Yvel.Add(float.Parse(full[1]));
+                if (i != 0)
+                {
+                    string[] full = line.Split(",");
+                    yimes.Add(float.Parse(full[0]));
+                    Yvel.Add(float.Parse(full[1]));
+                    i++
+                }
+                else
+                {
+                    obj.Y = float.Parse(line);
+                    i++;
+                }
             }
 
             if (files.Length > 0)
@@ -153,7 +181,7 @@ internal class Record : Component
         if (recording == true)
         {
             time += dt;
-
+             
             nowVX = obj.GetComponent<Rigidbody>().XVelocity;
             if (nowVX != lastVX)
             {
@@ -180,6 +208,10 @@ internal class Record : Component
         if (play == true)
         {
             time += dt;
+            if (firstframe)
+            {
+                obj.X = 
+            }
             if (Xindx != ximes.Count-1)
             {
                 if (time >= ximes[Xindx])
@@ -219,18 +251,22 @@ internal class Record : Component
                 }
             }
 
-            if (Tindx != textime.Count - 1)
+            if (Tndx != textime.Count - 1)
             {
-                if (time >= textime[Tindx])
+                if (time >= textime[Tndx])
                 {
-                    //addttextstuffhere
+                    obj.game.Audio.PlaySound(obj.game.next);
+                    obj.game.SceneChar = charr[Tndx];
+                    obj.game.SceneText = text[Tndx];
+                    obj.game.textover = false;
                 }
             }
 
 
             
-            if (Yindx == yimes.Count - 1 && Xindx == ximes.Count - 1)
+            if (Yindx == yimes.Count - 1 && Xindx == ximes.Count - 1 && Tndx == textime.Count - 1 && Spndx == spritime.Count - 1)
             {
+                obj.game.textover = true;
                 play = false;
             }
 
