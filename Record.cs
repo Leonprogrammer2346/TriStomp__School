@@ -219,6 +219,14 @@ internal class Record : Component
                 }
             }
 
+            if (Tindx != textime.Count - 1)
+            {
+                if (time >= textime[Tindx])
+                {
+                    //addttextstuffhere
+                }
+            }
+
 
             
             if (Yindx == yimes.Count - 1 && Xindx == ximes.Count - 1)
