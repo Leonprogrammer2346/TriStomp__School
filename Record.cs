@@ -212,7 +212,7 @@ internal class Record : Component
         {
             time += dt;
            
-            if (Xindx != ximes.Count - 1)
+            if (Xindx != ximes.Count)
             {
                 if (time >= ximes[Xindx])
                 {
@@ -222,7 +222,7 @@ internal class Record : Component
             }
 
 
-            if (Yindx != yimes.Count - 1)
+            if (Yindx != yimes.Count)
             {
                 if (time >= yimes[Yindx])
                 {
@@ -233,7 +233,7 @@ internal class Record : Component
 
             if (spritime.Count > 0)
             {
-                if (Spndx != spritime.Count - 1)
+                if (Spndx != spritime.Count)
                 {
                     if (time >= spritime[Spndx])
                     {
@@ -255,7 +255,7 @@ internal class Record : Component
             }
             
 
-            if (Tndx != textime.Count - 1)
+            if (Tndx != textime.Count)
             {
                 if (time >= textime[Tndx])
                 {
