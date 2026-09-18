@@ -41,12 +41,13 @@ internal class Record : Component
     public static List<String> spritelist = new();
     public static List<int> texturelist = new();
     public bool firstframe = true;
+    public int y;
 
 
     public Record(GameObject Obj)
     {
         obj = Obj;
-        
+
     }
 
     public override Component Clone(GameObject newObj)
@@ -63,23 +64,23 @@ internal class Record : Component
         if (input.IsKeyPressed(Keys.E))
         {
             recording = !recording;
-            
+
             if (recording == true)
             {
                 if (!play)
                 {
-                 time = 0;
+                    time = 0;
                 }
-                
+
                 Directory.CreateDirectory("RECORDINGS/" + obj.game.Index + "/" + obj.ObjectName);
                 path = Path.Combine("RECORDINGS/" + obj.game.Index + "/" + obj.ObjectName, "X.txt");
                 path1 = Path.Combine("RECORDINGS/" + obj.game.Index + "/" + obj.ObjectName, "Y.txt");
                 path2 = Path.Combine("RECORDINGS/" + obj.game.Index, "Dialog.txt");
                 path3 = Path.Combine("RECORDINGS/" + obj.game.Index + "/" + obj.ObjectName, "Sprite.txt");
-            
+
                 ploy = obj.GetComponent<Player>();
-                File.WriteAllText(path, obj.X);
-                File.WriteAllText(path1, obj.Y);
+                File.WriteAllText(path, obj.X + "\n");
+                File.WriteAllText(path1, obj.Y + "\n");
                 File.WriteAllText(path2, "");
                 File.WriteAllText(path3, "");
                 nowVX = obj.GetComponent<Rigidbody>().XVelocity;
@@ -90,16 +91,18 @@ internal class Record : Component
 
         if (input.IsKeyPressed(Keys.T) && recording)
         {
-            File.AppendAllText(path2, time + ",Character,Dialog");
-            File.AppendAllText(path3, time + ",null.png");
+            File.AppendAllText(path2, time + ",Character,Dialog" + "\n");
+            File.AppendAllText(path3, time + ",null.png" + "\n");
         }
 
-            if (input.IsKeyPressed(Keys.F))
+        if (input.IsKeyPressed(Keys.F))
         {
             time = 0;
             Yindx = 0;
             Xindx = 0;
+            y = 0;
             string[] files = Directory.GetFiles("RECORDINGS/" + obj.game.Index + "/" + obj.ObjectName, "*.txt");
+            string[] files1 = Directory.GetFiles("RECORDINGS/" + obj.game.Index, "*.txt");
             int i = 0;
             if (files.Length > 0)
             {
@@ -113,14 +116,14 @@ internal class Record : Component
                     string[] full = line.Split(",");
                     ximes.Add(float.Parse(full[0]));
                     Xvel.Add(float.Parse(full[1]));
-                    i++
+                    i++;
                 }
                 else
                 {
                     obj.X = float.Parse(line);
                     i++;
                 }
-                
+
             }
             i = 0;
 
@@ -137,7 +140,7 @@ internal class Record : Component
                     string[] full = line.Split(",");
                     yimes.Add(float.Parse(full[0]));
                     Yvel.Add(float.Parse(full[1]));
-                    i++
+                    i++;
                 }
                 else
                 {
@@ -148,7 +151,7 @@ internal class Record : Component
 
             if (files.Length > 0)
             {
-                string filename = files.FirstOrDefault(file => Path.GetFileNameWithoutExtension(file) == "Dialog");
+                string filename = files1.FirstOrDefault(file => Path.GetFileNameWithoutExtension(file) == "Dialog");
                 lines = File.ReadAllLines(filename);
             }
             foreach (string line in lines)
@@ -172,7 +175,7 @@ internal class Record : Component
                     spritime.Add(float.Parse(full[0]));
                     Sprite.Add(full[1]);
                 }
-                
+
             }
             play = !play;
 
@@ -181,7 +184,7 @@ internal class Record : Component
         if (recording == true)
         {
             time += dt;
-             
+
             nowVX = obj.GetComponent<Rigidbody>().XVelocity;
             if (nowVX != lastVX)
             {
@@ -202,17 +205,14 @@ internal class Record : Component
                 }
             }
             lastVY = nowVY;
-            
+
         }
 
         if (play == true)
         {
             time += dt;
-            if (firstframe)
-            {
-                obj.X = 
-            }
-            if (Xindx != ximes.Count-1)
+           
+            if (Xindx != ximes.Count - 1)
             {
                 if (time >= ximes[Xindx])
                 {
@@ -221,7 +221,7 @@ internal class Record : Component
                 }
             }
 
-            
+
             if (Yindx != yimes.Count - 1)
             {
                 if (time >= yimes[Yindx])
@@ -231,31 +231,35 @@ internal class Record : Component
                 }
             }
 
-            if (Spndx != spritime.Count - 1)
+            if (spritime.Count > 0)
             {
-                if (time >= spritime[Spndx])
+                if (Spndx != spritime.Count - 1)
                 {
-                    int inx = spritelist.FindIndex(x => x == Sprite[Spndx]);
-                    if (inx > -1)
+                    if (time >= spritime[Spndx])
                     {
-                        obj.Texture = texturelist[inx];
-                    }
-                    else
-                    {
-                        texturelist.Add(obj.game.LoadTexture(Sprite[Spndx]));
-                        spritelist.Add(Sprite[Spndx]);
-                        obj.Texture = texturelist[texturelist.Count()-1];
-                    }
+                        int inx = spritelist.FindIndex(x => x == Sprite[Spndx]);
+                        if (inx > -1)
+                        {
+                            obj.Texture = texturelist[inx];
+                        }
+                        else
+                        {
+                            texturelist.Add(obj.game.LoadTexture(Sprite[Spndx]));
+                            spritelist.Add(Sprite[Spndx]);
+                            obj.Texture = texturelist[texturelist.Count() - 1];
+                        }
 
-                    Spndx++;
+                        Spndx++;
+                    }
                 }
             }
+            
 
             if (Tndx != textime.Count - 1)
             {
                 if (time >= textime[Tndx])
                 {
-                    obj.game.Audio.PlaySound(obj.game.next);
+                    obj.game.Audio.PlaySound(obj.game.nnext);
                     obj.game.SceneChar = charr[Tndx];
                     obj.game.SceneText = text[Tndx];
                     obj.game.textover = false;
@@ -263,8 +267,8 @@ internal class Record : Component
             }
 
 
-            
-            if (Yindx == yimes.Count - 1 && Xindx == ximes.Count - 1 && Tndx == textime.Count - 1 && Spndx == spritime.Count - 1)
+
+            if (Yindx == yimes.Count - 1 && Xindx == ximes.Count - 1 && Tndx == textime.Count - 1)
             {
                 obj.game.textover = true;
                 play = false;
