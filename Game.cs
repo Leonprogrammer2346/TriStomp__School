@@ -659,10 +659,10 @@ class Game : GameWindow
         timer += (float)arg.Time;
         if (textover == false)
         {
-            
-
             textrender = true;
-            UpdateText(AllText[textndex]);
+            Console.WriteLine("thissucsl");
+            //THIS NEEDS A COOLDOWN WTF IS WRONG WITH YOU???
+            UpdateText(SceneText);
         }
         else
         {
