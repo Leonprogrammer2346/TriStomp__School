@@ -16,7 +16,7 @@ internal class Record : Component
     public float lastVY;
     public float nowVY;
     public bool recording;
-    public float time;
+    public static float time;
     public string path;
     public string path1;
     public string path2;
@@ -92,7 +92,7 @@ internal class Record : Component
         if (input.IsKeyPressed(Keys.T) && recording)
         {
             File.AppendAllText(path2, time + ",Character,Dialog" + "\n");
-            File.AppendAllText(path3, time + ",null.png" + "\n");
+            File.AppendAllText(path3, "null.png" + "\n");
         }
 
         if (input.IsKeyPressed(Keys.F))
@@ -169,11 +169,10 @@ internal class Record : Component
             }
             foreach (string line in lines)
             {
-                string[] full = line.Split(",");
-                if (full[1] != "null.png")
+                
+                if (line != "null.png")
                 {
-                    spritime.Add(float.Parse(full[0]));
-                    Sprite.Add(full[1]);
+                    Sprite.Add(line);
                 }
 
             }
@@ -231,13 +230,19 @@ internal class Record : Component
                 }
             }
 
-            if (spritime.Count > 0)
+            
+            
+
+            if (Tndx != textime.Count)
             {
-                if (Spndx != spritime.Count)
+                if (time >= textime[Tndx])
                 {
-                    if (time >= spritime[Spndx])
-                    {
-                        int inx = spritelist.FindIndex(x => x == Sprite[Spndx]);
+                    obj.game.Audio.PlaySound(obj.game.nnext);
+                    obj.game.SceneChar = charr[Tndx];
+                    obj.game.SceneText = text[Tndx];
+                    obj.game.textover = false;
+
+                    int inx = spritelist.FindIndex(x => x == Sprite[Spndx]);
                         if (inx > -1)
                         {
                             obj.Texture = texturelist[inx];
@@ -250,19 +255,6 @@ internal class Record : Component
                         }
 
                         Spndx++;
-                    }
-                }
-            }
-            
-
-            if (Tndx != textime.Count)
-            {
-                if (time >= textime[Tndx])
-                {
-                    obj.game.Audio.PlaySound(obj.game.nnext);
-                    obj.game.SceneChar = charr[Tndx];
-                    obj.game.SceneText = text[Tndx];
-                    obj.game.textover = false;
                     Tndx++
                 }
             }
