@@ -263,6 +263,7 @@ internal class Record : Component
                     obj.game.SceneChar = charr[Tndx];
                     obj.game.SceneText = text[Tndx];
                     obj.game.textover = false;
+                    Tndx++
                 }
             }
 
